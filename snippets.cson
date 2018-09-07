@@ -1,0 +1,86 @@
+'*':
+  'Doxygen Multi-Line Comment':
+    'prefix': '////'
+    'body': """
+    /////////////////////////////////////////////////
+    /// $1
+    /////////////////////////////////////////////////
+    """
+  'Doxygen Command Comment':
+    'prefix': '/'
+    'body': '/// $1'
+
+'.source.cpp':
+  'std::cout':
+    'prefix': 'stdcout'
+    'body': 'std::cout << $1 << std::endl;'
+
+'.source.asm.x86_64':
+  'Start Block':
+    'prefix': '_start'
+    'body':
+      """
+      global _start
+      $1
+      section .text
+      _start:
+        $2
+      """
+  'Data Block':
+    'prefix': '.data'
+    'body':
+      """
+      section .data
+        $1
+      """
+  'Exit Syscall':
+    'prefix': 'sysexit'
+    'body':
+      """
+      mov eax, 1
+      mov ebx, ${1:status}
+      int 0x80
+      $2
+      """
+
+  'Fork System Call':
+    'prefix': 'sysfork'
+    'body':
+      """
+      mov eax, 2
+      int 0x80
+      cmp eax, 0
+      jz ${1:child}
+
+      ${2:parent}:
+        ${3:parent Process}
+
+      ${4:child}:
+        ${5:child process}
+
+      $6
+      """
+
+  'Read Syscall':
+    'prefix': 'sysread'
+    'body':
+      """
+      mov eax, 3
+      mov ebx, 0
+      mov ecx, ${1:msg}
+      mov edx, ${2:len}
+      int 0x80
+      $3
+      """
+
+  'Write Syscall':
+    'prefix': 'syswrite'
+    'body':
+      """
+      mov eax, 4
+      mov ebx, 1
+      mov ecx, ${1:msg}
+      mov edx, ${2:len}
+      int 0x80
+      $3
+      """
